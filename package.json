@@ -1,0 +1,17 @@
+{
+  "name": "wikipedia-counter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "extend": "^3.0.0",
+    "fs-extra": "^0.24.0",
+    "redis": "^2.2.3",
+    "request": "^2.65.0"
+  }
+}
