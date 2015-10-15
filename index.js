@@ -12,6 +12,7 @@ var redis = require("redis"),
 var request = require('request');
 
 var i = 0;
+var en = 0;
 
 function countRequests(url) {
   var rl = require('readline').createInterface({
@@ -25,13 +26,18 @@ function countRequests(url) {
     var name = parts[1];
     var key = lang + ":::" + name;
     var views = parts[2];
+    i++;
+
+    if (lang !== 'en') {
+      return;
+    }
+    en++;
 
     client.incrby(key, parseInt(views));
 
-    i++;
   });
   rl.on('close', function() {
-    console.log(url + ": " + i);
+    console.log(url + ": " + i + " (" + en + " en)");
     process.exit(0);
   });
 }
