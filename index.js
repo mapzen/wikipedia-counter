@@ -4,19 +4,18 @@ var fs = require('fs');
 var fs =  require('fs-extra');
 var path = require('path');
 
-var fileName = process.argv[2];
+var url = process.argv[2];
 
 var redis = require("redis"),
   client = redis.createClient();
-
 
 var request = require('request');
 
 var i = 0;
 
-function countRequests(file) {
+function countRequests(url) {
   var rl = require('readline').createInterface({
-   input: require('fs').createReadStream(file).pipe(zlib.createGunzip())
+   input: request(url).pipe(zlib.createGunzip())
   });
 
   rl.on('line', function (line) {
@@ -32,9 +31,9 @@ function countRequests(file) {
     i++;
   });
   rl.on('close', function() {
-    console.log(file + ": " + i);
+    console.log(url + ": " + i);
     process.exit(0);
   });
 }
 
-countRequests(fileName);
+countRequests(url);
