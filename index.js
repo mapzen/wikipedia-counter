@@ -4,7 +4,7 @@ var fs = require('fs');
 var fs =  require('fs-extra');
 var path = require('path');
 
-var url = process.argv[2];
+var url_or_path = process.argv[2];
 
 var request = require('request');
 
@@ -15,9 +15,17 @@ var conString = "postgres://julian@localhost/wikipedia";
 
 var i = 0;
 
-function countRequests(url) {
-  console.log("counting " + url);
+function get_stream_for_input_param(url_or_path) {
+  if (url_or_path.indexOf('http') === 0) {
+    console.log("streaming from URL "+ url_or_path);
+    return request(url_or_path);
+  } else {
+    console.log("reading from file "+ url_or_path);
+    return fs.createReadStream(url_or_path);
+  }
+}
 
+function countRequests(input_stream) {
   pg.connect(conString, function(err) {
     if(err) {
       return console.error('could not connect to postgres', err);
@@ -25,7 +33,8 @@ function countRequests(url) {
 
     var queryBegin = "\
     BEGIN;\
-    LOCK TABLE view_counts IN SHARE ROW EXCLUSIVE MODE;"
+    LOCK TABLE view_counts; \
+    SET LOCAL synchronous_commit = off;"
 
     var query = "\
     WITH upsert AS ( \
@@ -46,16 +55,13 @@ function countRequests(url) {
 
     pg.prepare('update_count', query, 3, function(prepare_err) {
       if (prepare_err) throw prepare_err;
-
-
-      var req = request(url);
       var zpipe = zlib.createGunzip();
 
       var rl = require('readline').createInterface({
-        input: req.pipe(zpipe)
+        input: input_stream.pipe(zpipe)
       });
 
-      req.on('error', function(error) {
+      input_stream.on('error', function(error) {
         console.log(error);
         process.exit(1);
       });
@@ -89,4 +95,4 @@ function countRequests(url) {
   });
 }
 
-countRequests(url);
+countRequests(get_stream_for_input_param(url_or_path));
