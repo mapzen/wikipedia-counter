@@ -6,12 +6,13 @@ function scanNext(cursor) {
     var newCursor = response[0];
     var items = response[1];
 
-    items.forEach(function(key) {
-      client.get(key, function(err, value) {
-        console.log(value + ", " + key);
-      });
+    client.mget(items, function(response) {
+      console.log(response);
     });
-    scanNext(newCursor);
+
+    if (newCursor !== "0") {
+      scanNext(newCursor);
+    }
   });
 }
 
