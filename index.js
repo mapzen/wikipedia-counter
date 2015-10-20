@@ -6,60 +6,85 @@ var path = require('path');
 
 var url = process.argv[2];
 
-var redis = require("redis"),
-  client = redis.createClient();
-
 var request = require('request');
 
+var Pg = require('pg-native');
+
+var pg = new Pg();
+var conString = "postgres://julian@localhost/wikipedia";
+
 var i = 0;
-var en = 0;
 
 function countRequests(url) {
-  client.exists(url, function(err, key_exists) {
-    if (key_exists) {
-      console.log("skipping " + url);
-      return;
+  console.log("counting " + url);
+
+  pg.connect(conString, function(err) {
+    if(err) {
+      return console.error('could not connect to postgres', err);
     }
-    console.log("counting " + url);
 
-    var req = request(url);
-    var zpipe = zlib.createGunzip();
+    var queryBegin = "\
+    BEGIN;\
+    LOCK TABLE view_counts IN SHARE ROW EXCLUSIVE MODE;"
 
-    var rl = require('readline').createInterface({
-      input: req.pipe(zpipe)
-    });
+    var query = "\
+    WITH upsert AS ( \
+      UPDATE \
+        view_counts \
+      SET \
+        count = count + $1 \
+      WHERE \
+        path = $2::text \
+      RETURNING * \
+    ) \
+    \
+    INSERT INTO view_counts (path, count) \
+    \
+    ( SELECT $2::text, 1 WHERE NOT EXISTS (SELECT * FROM upsert) );";
 
-    req.on('error', function(error) {
-      console.log(error);
-      process.exit(1);
-    });
+    var queryEnd="COMMIT;";
 
-    zpipe.on('error', function(error) {
-      console.log(url + "\n" + error);
-      process.exit(1);
-    });
+    pg.prepare('update_count', query, 3, function(prepare_err) {
+      if (prepare_err) throw prepare_err;
 
-    rl.on('line', function (line) {
-      var parts = line.split(' ');
 
-      var lang = parts[0];
-      var name = parts[1];
-      var key = lang + ":::" + name;
-      var views = parts[2];
-      i++;
+      var req = request(url);
+      var zpipe = zlib.createGunzip();
 
-      if (lang !== 'en') {
-        return;
-      }
-      en++;
+      var rl = require('readline').createInterface({
+        input: req.pipe(zpipe)
+      });
 
-      client.incrby(key, parseInt(views));
-    });
+      req.on('error', function(error) {
+        console.log(error);
+        process.exit(1);
+      });
 
-    rl.on('close', function() {
-      console.log(url + ": " + i + " (" + en + " en)");
-      client.set(url, "ok");
-      process.exit(0);
+      zpipe.on('error', function(error) {
+        console.log(url + "\n" + error);
+        process.exit(1);
+      });
+
+      rl.on('line', function (line) {
+        var parts = line.split(' ');
+
+        var lang = parts[0];
+        var name = parts[1];
+        var views = parts[2];
+        i++;
+
+        pg.querySync(queryBegin);
+        pg.executeSync('update_count', [ views, name ]);
+        pg.querySync(queryEnd);
+      });
+
+      rl.on('close', function() {
+        console.log(url + ": " + i);
+
+        pg.end(function() {
+          process.exit(0);
+        });
+      });
     });
   });
 }
