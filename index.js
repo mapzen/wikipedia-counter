@@ -31,29 +31,10 @@ function countRequests(input_stream) {
       return console.error('could not connect to postgres', err);
     }
 
-    var queryBegin = "\
-    BEGIN;\
-    LOCK TABLE view_counts; \
-    SET LOCAL synchronous_commit = off;"
+    var pg95query = "INSERT INTO view_counts (path, language, count) VALUES( $1::text, $2, $3) \
+    ON CONFLICT (language, path) DO UPDATE SET count = view_counts.count + EXCLUDED.count;";
 
-    var query = "\
-    WITH upsert AS ( \
-      UPDATE \
-        view_counts \
-      SET \
-        count = count + $1 \
-      WHERE \
-        path = $2::text \
-      RETURNING * \
-    ) \
-    \
-    INSERT INTO view_counts (path, count) \
-    \
-    ( SELECT $2::text, 1 WHERE NOT EXISTS (SELECT * FROM upsert) );";
-
-    var queryEnd="COMMIT;";
-
-    pg.prepare('update_count', query, 3, function(prepare_err) {
+    pg.prepare('update_count', pg95query, 3, function(prepare_err) {
       if (prepare_err) throw prepare_err;
       var zpipe = zlib.createGunzip();
 
@@ -79,9 +60,13 @@ function countRequests(input_stream) {
         var views = parts[2];
         i++;
 
-        if (i%1000 ===0) console.log(i);
+        // remove this to import other languages and proejcts
+        // it will significantly increase the amount of data inserted
+        if (lang !== 'en') {
+          return;
+        }
 
-        pg.executeSync('update_count', [ views, name ]);
+        pg.executeSync('update_count', [ name, lang, views ]);
       });
 
       rl.on('close', function() {

@@ -8,7 +8,8 @@ CREATE TABLE view_counts
   path text,
   language character(10),
   count bigint,
-  CONSTRAINT view_counts_pkey PRIMARY KEY (id)
+  CONSTRAINT view_counts_pkey PRIMARY KEY (id),
+  UNIQUE (language, path)
 )
 WITH (
   OIDS=FALSE
