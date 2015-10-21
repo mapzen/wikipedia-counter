@@ -32,5 +32,3 @@ included)
 4. Read and modify crunch.sh to suit your needs, run it, and wait
 5. View the output of top viewed pages with location data that is calculated automatically
 6. Run other interesting queries and report back!
-
-http://www.the-art-of-web.com/sql/upsert/
