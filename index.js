@@ -79,13 +79,13 @@ function countRequests(input_stream) {
         var views = parts[2];
         i++;
 
-        pg.querySync(queryBegin);
+        if (i%1000 ===0) console.log(i);
+
         pg.executeSync('update_count', [ views, name ]);
-        pg.querySync(queryEnd);
       });
 
       rl.on('close', function() {
-        console.log(url + ": " + i);
+        console.log(url_or_path + ": " + i);
 
         pg.end(function() {
           process.exit(0);
