@@ -9,9 +9,16 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "csv-parse": "^1.0.0",
+    "csv-stringify": "0.0.8",
     "extend": "^3.0.0",
     "fs-extra": "^0.24.0",
+    "pg": "^4.4.3",
+    "pgpass": "0.0.3",
     "redis": "^2.2.3",
-    "request": "^2.65.0"
+    "redis-scanstreams": "^1.0.3",
+    "request": "^2.65.0",
+    "stream-to-array": "^2.0.2",
+    "stream-transform": "^0.1.0"
   }
 }
