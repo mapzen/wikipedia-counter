@@ -29,7 +29,7 @@ So far this has been used only to aggregate a single month of Wikipedia logs.
 [here](https://de.wikipedia.org/wiki/Wikipedia:WikiProjekt_Georeferenzierung/Hauptseite/Wikipedia-World/en)
 3.) Gernerate a list of pagecount files to download (currently manual, a sample for Sept 2015 is
 included)
-4.) Run crunch.sh and wait
+4.) Read and modify crunch.sh to suit your needs, run it, and wait
 5.) View the output of top viewed pages with location data that is calculated automatically
 6.) Run other interesting queries and report back!
 
