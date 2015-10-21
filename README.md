@@ -3,8 +3,8 @@
 This repo contains code to take [hourly page view count data](https://dumps.wikimedia.org/other/pagecounts-raw/)
 from Wikipedia, and construct page counts for longer periods using PostgreSQL.
 
-** Note: This requires PostgreSQL 9.5 to take advantage of the new
-[UPSERT](https://wiki.postgresql.org/wiki/UPSERT) feature, or it's just too slow **
+**Note: This requires PostgreSQL 9.5 to take advantage of the new
+[UPSERT](https://wiki.postgresql.org/wiki/UPSERT) feature, or it's just too slow**
 
 
 ## How it works
