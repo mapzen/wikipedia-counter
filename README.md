@@ -24,13 +24,13 @@ So far this has been used only to aggregate a single month of Wikipedia logs.
 
 ## Instructions
 
-1.) Set up a PostgreSQL 9.5 beta1 or newer instance
-2.) Download the Wikipedia world PostGIS dump from
+1. Set up a PostgreSQL 9.5 beta1 or newer instance
+2. Download the Wikipedia world PostGIS dump from
 [here](https://de.wikipedia.org/wiki/Wikipedia:WikiProjekt_Georeferenzierung/Hauptseite/Wikipedia-World/en)
-3.) Gernerate a list of pagecount files to download (currently manual, a sample for Sept 2015 is
+3. Gernerate a list of pagecount files to download (currently manual, a sample for Sept 2015 is
 included)
-4.) Read and modify crunch.sh to suit your needs, run it, and wait
-5.) View the output of top viewed pages with location data that is calculated automatically
-6.) Run other interesting queries and report back!
+4. Read and modify crunch.sh to suit your needs, run it, and wait
+5. View the output of top viewed pages with location data that is calculated automatically
+6. Run other interesting queries and report back!
 
 http://www.the-art-of-web.com/sql/upsert/
