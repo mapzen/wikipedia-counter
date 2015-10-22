@@ -19,12 +19,12 @@ So far this has been used only to aggregate a single month of Wikipedia logs.
 
 * 64GB of disk space and/or an internet connection fast enough to download 64GB, to store one months
   worth of logs
-* Another 15GB or so of disk space to be used by Postgres
+* Another 35GB or so of disk space to be used by Postgres
 * About a day of processing on a modern quad core CPU
 
 ## Instructions
 
-1. Set up a PostgreSQL 9.5 beta1 or newer instance
+1. Set up a PostgreSQL 9.5 beta1 or newer instance (with PostGIS)
 2. Download the Wikipedia world PostGIS dump from
 [here](https://de.wikipedia.org/wiki/Wikipedia:WikiProjekt_Georeferenzierung/Hauptseite/Wikipedia-World/en)
 3. Gernerate a list of pagecount files to download (currently manual, a sample for Sept 2015 is
