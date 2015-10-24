@@ -1,5 +1,8 @@
 #!/bin/bash -ex
 
+# install script dependencies
+npm install
+
 # drop it all!
 psql -d wikipedia < sql/00_reset.sql
 
