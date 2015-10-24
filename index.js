@@ -51,7 +51,7 @@ function countRequests(input_stream) {
       });
 
       zpipe.on('error', function(error) {
-        console.log(url + "\n" + error);
+        console.log(url_or_path + "\n" + error);
         process.exit(1);
       });
 
