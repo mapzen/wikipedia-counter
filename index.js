@@ -31,6 +31,9 @@ function countRequests(input_stream) {
       return console.error('could not connect to postgres', err);
     }
 
+    var asyncQuery = "SET SESSION synchronous_commit = off";
+    pg.querySync(asyncQuery);
+
     var pg95query = "INSERT INTO view_counts (path, language, count) VALUES( $1::text, $2, $3) \
     ON CONFLICT (language, path) DO UPDATE SET count = view_counts.count + EXCLUDED.count;";
 
