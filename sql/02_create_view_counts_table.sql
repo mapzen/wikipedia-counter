@@ -2,7 +2,7 @@
 
 -- DROP TABLE view_counts;
 
-CREATE TABLE view_counts
+CREATE UNLOGGED TABLE view_counts
 (
   path text,
   language character(15),
