@@ -17,7 +17,7 @@ psql -d wikipedia < sql/01_modify_wiki_geo_table.sql
 
 # in parallel import view counts data
 # a.) from web (easier on disk, slower)
-# cat pagecounts.txt | time xargs -P 4 -n 1 nice time node index.js
+# cat data/pagecounts.txt | time xargs -P 4 -n 1 nice time node index.js
 # b.) from files (faster for multiple runs)
 # wget -I pagecounts.txt # use this to download
 time find /home/julian/data/wikipedia/*.gz | xargs -P 4 -n 1 nice time node index.js
